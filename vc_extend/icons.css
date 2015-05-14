@@ -1,0 +1,243 @@
+/***	Add jscomposer extension button icons	***/
+
+/* path to the icon file should be relative to the css file where you place your css rules (this file) */
+.vc_modal-dialog .wpb-content-layouts .wpb-layout-element-button .icon-wpb-repairstatus {
+	background-image: url(icons/wrench.png);
+	background-size: contain;
+}
+ 
+/* .wpb_{shortcode_base} .wpb_element_wrapper selector can be used to add background image to VC shortcode block in the Visual Composer Editor working canvas */
+.wpb_repairstatus .icon-wpb-repairstatus {
+	background-image: url(icons/wrench.png);
+	background-size: 32px;
+}
+
+/* path to the icon file should be relative to the css file where you place your css rules (this file) */
+.vc_modal-dialog .wpb-content-layouts .wpb-layout-element-button .icon-wpb-drawer {
+	background-image: url(icons/drawericon.png);
+	background-size: contain;
+}
+ 
+/* .wpb_{shortcode_base} .wpb_element_wrapper selector can be used to add background image to VC shortcode block in the Visual Composer Editor working canvas */
+.wpb_drawer .icon-wpb-drawer {
+	background-image: url(icons/drawericon.png);
+	background-size: 32px;}
+
+/* path to the icon file should be relative to the css file where you place your css rules (this file) */
+.vc_modal-dialog .wpb-content-layouts .wpb-layout-element-button .icon-wpb-sorttablepost {
+	background-image: url(icons/posttableicon.png);
+	background-size: contain;
+}
+ 
+/* .wpb_{shortcode_base} .wpb_element_wrapper selector can be used to add background image to VC shortcode block in the Visual Composer Editor working canvas */
+.wpb_sorttablepost .icon-wpb-sorttablepost {
+	background-image: url(icons/posttableicon.png);
+	background-size: 32px;
+}
+
+/* path to the icon file should be relative to the css file where you place your css rules (this file) */
+.vc_modal-dialog .wpb-content-layouts .wpb-layout-element-button .icon-wpb-testimonial {
+	background-image: url(icons/testimonial.png);
+	background-size: contain;
+}
+ 
+/* .wpb_{shortcode_base} .wpb_element_wrapper selector can be used to add background image to VC shortcode block in the Visual Composer Editor working canvas */
+.wpb_tekserve-testimonial .icon-wpb-testimonial {
+	background-image: url(icons/testimonial.png);
+	background-size: 32px;
+}
+
+/* path to the icon file should be relative to the css file where you place your css rules (this file) */
+.vc_modal-dialog .wpb-content-layouts .wpb-layout-element-button .icon-wpb-case-study {
+	background-image: url(icons/casestudy.png);
+	background-size: contain;
+}
+ 
+/* .wpb_{shortcode_base} .wpb_element_wrapper selector can be used to add background image to VC shortcode block in the Visual Composer Editor working canvas */
+.wpb_tekserve-case-study .icon-wpb-case-study {
+	background-image: url(icons/casestudy.png);
+	background-size: 32px;
+}
+
+/* path to the icon file should be relative to the css file where you place your css rules (this file) */
+.vc_modal-dialog .wpb-content-layouts .wpb-layout-element-button .icon-wpb-single-post {
+	background-image: url(icons/single-post.png);
+	background-size: contain;
+}
+ 
+/* .wpb_{shortcode_base} .wpb_element_wrapper selector can be used to add background image to VC shortcode block in the Visual Composer Editor working canvas */
+.wpb_single_post .icon-wpb-single-post {
+	background-image: url(icons/single-post.png);
+	background-size: 32px;
+}
+
+/* path to the icon file should be relative to the css file where you place your css rules (this file) */
+.vc_modal-dialog .wpb-content-layouts .wpb-layout-element-button .icon-wpb-widget {
+	background-image: url(icons/widget.png);
+	background-size: contain;
+}
+ 
+/* .wpb_{shortcode_base} .wpb_element_wrapper selector can be used to add background image to VC shortcode block in the Visual Composer Editor working canvas */
+.wpb_widgets_on_pages .icon-wpb-widget {
+	background-image: url(icons/widget.png);
+	background-size: 32px;
+}
+
+/* path to the icon file should be relative to the css file where you place your css rules (this file) */
+.vc_modal-dialog .wpb-content-layouts .wpb-layout-element-button .icon-wpb-nrelatepopular {
+	background-image: url(icons/popular.png);
+	background-size: contain;
+}
+ 
+/* .wpb_{shortcode_base} .wpb_element_wrapper selector can be used to add background image to VC shortcode block in the Visual Composer Editor working canvas */
+.wpb_nrelatepopular .icon-wpb-nrelatepopular {
+	background-image: url(icons/popular.png);
+	background-size: 32px;
+}
+
+/* path to the icon file should be relative to the css file where you place your css rules (this file) */
+.vc_modal-dialog .wpb-content-layouts .wpb-layout-element-button .icon-wpb-nrelaterelated {
+	background-image: url(icons/related.png);
+	background-size: contain;
+}
+ 
+/* .wpb_{shortcode_base} .wpb_element_wrapper selector can be used to add background image to VC shortcode block in the Visual Composer Editor working canvas */
+.wpb_nrelaterelated .icon-wpb-nrelaterelated {
+	background-image: url(icons/related.png);
+	background-size: 32px;
+}
+
+/* path to the icon file should be relative to the css file where you place your css rules (this file) */
+.vc_modal-dialog .wpb-content-layouts .wpb-layout-element-button .icon-wpb-map {
+	background-image: url(icons/directions.png);
+	background-size: contain;
+}
+ 
+/* .wpb_{shortcode_base} .wpb_element_wrapper selector can be used to add background image to VC shortcode block in the Visual Composer Editor working canvas */
+.wpb_get_to_tekserve .icon-wpb-map {
+	background-image: url(icons/directions.png);
+	background-size: 32px;
+}
+
+/* path to the icon file should be relative to the css file where you place your css rules (this file) */
+.vc_modal-dialog .wpb-content-layouts .wpb-layout-element-button .icon-wpb-map-drawer {
+	background-image: url(icons/mapdrawericon.png);
+	background-size: contain;
+}
+ 
+/* .wpb_{shortcode_base} .wpb_element_wrapper selector can be used to add background image to VC shortcode block in the Visual Composer Editor working canvas */
+.wpb_get_to_tekserve_drawer .icon-wpb-map-drawer {
+	background-image: url(icons/mapdrawericon.png);
+	background-size: 32px;
+}
+
+/* path to the icon file should be relative to the css file where you place your css rules (this file) */
+.vc_modal-dialog .wpb-content-layouts .wpb-layout-element-button .icon-wpb-detailBox {
+	background-image: url(icons/detailbox.png);
+	background-size: contain;
+}
+ 
+/* .wpb_{shortcode_base} .wpb_element_wrapper selector can be used to add background image to VC shortcode block in the Visual Composer Editor working canvas */
+.wpb_detailbox .icon-wpb-detailBox {
+	background-image: url(icons/detailbox.png);
+	background-size: contain;
+}
+
+/* path to the icon file should be relative to the css file where you place your css rules (this file) */
+.vc_modal-dialog .wpb-content-layouts .wpb-layout-element-button .icon-wpb-footerfolk {
+	background-image: url(icons/footerfolk.png);
+	background-size: contain;
+}
+ 
+/* .wpb_{shortcode_base} .wpb_element_wrapper selector can be used to add background image to VC shortcode block in the Visual Composer Editor working canvas */
+.wpb_footerfolk .icon-wpb-footerfolk {
+	background-image: url(icons/footerfolk.png);
+	background-size: contain;
+}
+
+/* path to the icon file should be relative to the css file where you place your css rules (this file) */
+.vc_modal-dialog .wpb-content-layouts .wpb-layout-element-button .icon-wpb-rentalitemcat {
+	background-image: url(icons/rentaldrawer.png);
+	background-size: contain;
+}
+ 
+/* .wpb_{shortcode_base} .wpb_element_wrapper selector can be used to add background image to VC shortcode block in the Visual Composer Editor working canvas */
+.wpb_rentalitemcategory .icon-wpb-rentalitemcat {
+	background-image: url(icons/rentaldrawer.png);
+	background-size: 32px;
+}
+
+/* path to the icon file should be relative to the css file where you place your css rules (this file) */
+.vc_modal-dialog .wpb-content-layouts .wpb-layout-element-button .icon-wpb-rentalitem {
+	background-image: url(icons/rentalitem.png);
+	background-size: contain;
+}
+ 
+/* .wpb_{shortcode_base} .wpb_element_wrapper selector can be used to add background image to VC shortcode block in the Visual Composer Editor working canvas */
+.wpb_rentalitem .icon-wpb-rentalitem {
+	background-image: url(icons/rentalitem.png);
+	background-size: 32px;
+}
+
+/* path to the icon file should be relative to the css file where you place your css rules (this file) */
+.vc_modal-dialog .wpb-content-layouts .wpb-layout-element-button .icon-wpb-rentalcheckout,
+.vc_modal-dialog .wpb-content-layouts .wpb-layout-element-button .icon-wpb-rentaldateform {
+	background-image: url(icons/form.png);
+	background-size: contain;
+}
+ 
+/* .wpb_{shortcode_base} .wpb_element_wrapper selector can be used to add background image to VC shortcode block in the Visual Composer Editor working canvas */
+.wpb_rentalcheckout .icon-wpb-rentalcheckout,
+.wpb_rentaldateform .icon-wpb-rentaldateform {
+	background-image: url(icons/form.png);
+	background-size: 32px;
+}
+	
+	
+/***	Change jscomposer modal default styles	***/
+
+
+.wpb_element_wrapper .textarea_raw_html,
+.wpb_edit_form_elements .edit_form_line .textarea_raw_html {
+  color: #004d72;
+  font-size: 14px;
+}
+
+.vc_panel.vc_shortcode-edit-form {
+	left: 25% !important;
+	top: 50px !important;
+}
+
+.vc_panel .vc_panel-heading {
+	background: #004d72;
+	cursor: default;
+}
+
+.vc_panel .vc_panel-heading .vc_close {
+	cursor: pointer;
+}
+
+.wpb-elements-list-modal .vc_modal-dialog .wpb-content-layouts li {
+	background: #ccc;
+}
+
+.wpb-elements-list-modal .vc_modal-dialog .wpb-content-layouts li:hover {
+	background: #fff;
+}
+
+.vc_panel .vc_description,
+.wpb-elements-list-modal .vc_modal-dialog .wpb-content-layouts a .vc_element-description {
+	color: #40a8c9;
+}
+
+.vc_row.wpb_row_container > .wpb_vc_column > .wpb_element_wrapper .wpb_content_element > .wpb_element_wrapper{
+	border: 2px solid #40a8c9;
+}
+
+.wpb_element_wrapper .vc_controls > .vc_controls-cc {
+	background-color: #f36f37;
+}
+
+.vc_controls .vc_controls-cc .vc_control-btn .vc_btn-content:hover {
+	background-color: #40a8c9;
+}

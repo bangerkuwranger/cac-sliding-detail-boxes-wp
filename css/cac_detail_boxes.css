@@ -1,0 +1,270 @@
+.page .page #wrap #inner .wrap #content div.wpb_row.innerRowWrap.dboxsection {
+	padding: 0;
+}
+
+.innerRowWrap .detailBox {
+	background-color: #555;
+	background-color: rgba(0, 0, 0, .2);
+	padding: 2em;
+}
+
+.innerRowWrap .detailBox:before,
+.innerRowWrap .detailBox:after {
+	display: table;
+	height: 0;
+	content: "";
+}
+
+.innerRowWrap .detailBox:before {
+	margin-left: 0;
+}
+
+.innerRowWrap .detailBox:after {
+	clear: both;
+}
+
+.innerRowWrap .detailBox .detailBox-left,
+.innerRowWrap .detailBox .detailBox-right {
+	width: 49%;
+	float: left;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+	box-sizing: border-box;
+	overflow: hidden;
+}
+
+.innerRowWrap .detailBox .detailBoxTrigger {
+	display: inline-block;
+	position: relative;
+	font-size: 1.25em;
+	margin-bottom: 1em;
+	text-transform: uppercase;
+	cursor: pointer;
+	margin-right: 1em;
+}
+
+.innerRowWrap .detailBox .detailBoxTrigger:after {
+    content: "\f105";
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit;
+    color: #40a8c9;
+    font-size: inherit;
+    position: absolute;
+    top: 0;
+    right: -1em;
+}
+
+.innerRowWrap .detailBox .detailBox-right .detailBox-mobile-back:before {
+	content: "\f100"; 
+	font-family: FontAwesome;
+	font-style: normal;
+	font-weight: normal;
+	text-decoration: inherit;
+	color: #40a8c9;
+	font-size: inherit;
+	position: absolute;
+	top: -.2em;
+	left: 0;
+}
+
+.innerRowWrap.orange .detailBox .detailBoxTrigger:after,
+.innerRowWrap.orange .detailBox .detailBox-right .detailBox-mobile-back:before {
+	color: #004d72;
+}
+
+.innerRowWrap.darkblue .detailBox .detailBoxTrigger:after,
+.innerRowWrap.darkblue .detailBox .detailBox-right .detailBox-mobile-back:before {
+	color: #f37f37;
+}
+
+.innerRowWrap.lightblue .detailBox .detailBoxTrigger:after,
+.innerRowWrap.lightblue .detailBox .detailBox-right .detailBox-mobile-back:before {
+	color: #004d72;
+}
+
+.innerRowWrap .detailBox .detailBoxTrigger-container.active .detailBoxTrigger:after {
+	content: "\f104";
+}
+
+.innerRowWrap .detailBox .detailBoxTrigger:hover,
+.innerRowWrap .detailBox .detailBoxTrigger-container.active .detailBoxTrigger ,
+.innerRowWrap.darkblue .detailBox .detailBoxTrigger:hover,
+.innerRowWrap.darkblue .detailBox .detailBoxTrigger-container.active .detailBoxTrigger {
+	color: #f36f37;
+}
+
+.innerRowWrap.orange .detailBox .detailBoxTrigger:hover,
+.innerRowWrap.orange .detailBox .detailBoxTrigger-container.active .detailBoxTrigger,
+.innerRowWrap.lightblue .detailBox .detailBoxTrigger:hover,
+.innerRowWrap.lightblue .detailBox .detailBoxTrigger-container.active .detailBoxTrigger {
+	color: #004d72;
+}
+
+.innerRowWrap .detailBox .detailBoxTrigger-container.active .detailBoxTrigger:hover {
+	color: #004d72;
+	cursor: default;
+}
+
+.innerRowWrap.darkblue .detailBox .detailBoxTrigger-container.active .detailBoxTrigger:hover,
+.innerRowWrap.orange .detailBox .detailBoxTrigger-container.active .detailBoxTrigger:hover,
+.innerRowWrap.lightblue .detailBox .detailBoxTrigger-container.active .detailBoxTrigger:hover {
+	color: #fff;
+}
+
+.innerRowWrap .detailBox .detailBox-right {
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: 60%;
+	min-height: 300px;
+	background-image: url(images/clicklearnmore-wht.svg);
+	position: relative;
+	height: 100%;
+}
+
+.innerRowWrap.orange .detailBox .detailBox-right {
+	background-image: url(images/clicklearnmore-org.svg);
+}
+
+.innerRowWrap.darkblue .detailBox .detailBox-right {
+	background-image: url(images/clicklearnmore-dbl.svg);
+}
+
+.innerRowWrap.lightblue .detailBox .detailBox-right {
+	background-image: url(images/clicklearnmore-lbl.svg);
+}
+
+.innerRowWrap .detailBox .detailBox-right.active {
+	background: transparent !important;
+}
+
+.innerRowWrap .detailBox .detailBox-detail {
+	position: absolute;
+    height: 100%;
+    width: 95%;
+	display: none;
+	padding-left: 1em;
+}
+
+.innerRowWrap .detailBox .detailBox-right .detailBox-mobile {
+	display: none;
+}
+
+/* Detail Boxes - Responsive
+------------------------------------------------------------ */
+
+@media only screen and (max-width: 640px) {
+
+	.innerRowWrap .detailBox {
+		width: 1280px;
+		position: relative;
+		-webkit-transition: left 300ms cubic-bezier(0.580, 1, 0.835, 1); /* older webkit */
+		-webkit-transition: left 300ms cubic-bezier(0.580, 1.230, 0.835, 1.035); 
+		-moz-transition: left 300ms cubic-bezier(0.580, 1.230, 0.835, 1.035);
+		-ms-transition: left 300ms cubic-bezier(0.580, 1.230, 0.835, 1.035); 
+		-o-transition: left 300ms cubic-bezier(0.580, 1.230, 0.835, 1.035); 
+		transition: left 300ms cubic-bezier(0.580, 1.230, 0.835, 1.035); /* custom */
+		padding: 3em;
+	}
+	
+	.innerRowWrap .detailBox.shifted {
+		left: -640px;
+	}
+	
+	.innerRowWrap .detailBox .detailBox-left {
+		opacity: 1;
+	}
+	
+	.innerRowWrap .detailBox .detailBox-right {
+		opacity: 0;
+	}
+	
+	.innerRowWrap .detailBox.shifted .detailBox-left {
+		opacity: 0;
+	}
+	
+	.innerRowWrap .detailBox.shifted .detailBox-right {
+		opacity: 1;
+	}
+	
+	.innerRowWrap .detailBox .detailBox-detail,
+	.innerRowWrap .detailBox .detailBox-right {
+		max-width: 445px;
+		padding-left: 0;
+	}
+	
+	.innerRowWrap .detailBox .detailBox-right .detailBox-mobile {
+		display: block;
+		margin-bottom: 1em;
+	}
+	
+	.innerRowWrap .detailBox .detailBox-right .detailBox-mobile-back {
+		font-size: 1.25em;
+		text-transform: uppercase;
+		padding: 0 1em;
+		cursor: pointer;
+		position: relative;
+		vertical-align: top;
+	}
+	
+	.innerRowWrap .detailBox .detailBox-right .detailBox-mobile-title {
+		font-size: 1.25em;
+		text-align: center;
+		width: 400px;
+		display: inline-block;
+		font-weight: 900;
+		text-transform: uppercase;
+	}
+
+}
+
+@media only screen and (max-width: 500px) {
+
+	.innerRowWrap .detailBox {
+		width: 640px;
+		padding: 1em;
+	}
+	
+	.innerRowWrap .detailBox .detailBox-left, 
+	.innerRowWrap .detailBox .detailBox-right {
+		width: 45%;
+		min-height: 480px;
+	}
+	
+	.innerRowWrap .detailBox .detailBox-left {
+		margin-right: 1em;
+	}
+	
+	.innerRowWrap .detailBox .detailBoxTrigger {
+		width: 85%;
+	}
+	
+	.innerRowWrap .detailBox.shifted {
+		left: -320px;
+	}
+	
+	.innerRowWrap .detailBox .detailBox-right .detailBox-mobile-back {
+		left: 1em;
+	}
+	
+	.innerRowWrap .detailBox .detailBox-right .detailBox-mobile-title {
+		width: auto;
+	}
+	
+	.innerRowWrap .detailBox .detailBox-detail, .innerRowWrap .detailBox .detailBox-right {
+		max-width: 280px;
+	}
+	
+	.innerRowWrap .detailBox .detailBox-detail {
+		max-width: 250px;
+		padding-left: 2em;
+	}
+	
+	.innerRowWrap .detailBox .detailBox-right .detailBox-mobile-title {
+		text-align: left;
+		padding-left: 32px;
+	}
+
+}
