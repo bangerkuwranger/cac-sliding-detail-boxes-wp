@@ -34,7 +34,8 @@ define( 'CAC_DETAIL_BOX_URL', plugin_dir_url( __FILE__ );
 add_action( 'wp_enqueue_scripts', 'cAc_detail_box_queuing' );
 function cAc_detail_box_queuing() {
 
-	wp_register_script( 'cAc_detail_box', CAC_DETAIL_BOX_URL . 'js/', array( 'jquery', 'jquery-ui-core', 'jquery-effects-slide' ), '1.0' );
+	wp_register_script( 'cAc_detail_box', CAC_DETAIL_BOX_URL . 'js/cac_detail_boxes.js', array( 'jquery', 'jquery-ui-core', 'jquery-effects-slide' ), '1.0' );
+	wp_register_style( 'cAc_detail_box', CAC_DETAIL_BOX_URL . 'css/cac_detail_boxes.css', array( 'dashicons' ), '1.0' );
 	
 	wp_enqueue_style( 'dashicons' );
 	wp_enqueue_style( 'cAc_detail_box' );
@@ -84,15 +85,32 @@ function cAc_detail_box_shortcode( $atts, $content = null ) {
 		'detailcontent10'	=> ''
   
    ), $atts ) );
- 
-	$content = wpb_js_remove_wpautop( $content ); // fix unclosed/unwanted paragraph tags in $content
+ 	
+ 	// fix unclosed/unwanted paragraph tags in $content
+ 	if( function_exists( 'wpb_js_remove_wpautop') {
+ 	
+		$content = wpb_js_remove_wpautop( $content ); 
+	
+	}	//end if( function_exists( 'wpb_js_remove_wpautop')
+	
+	$pairarray = explode("</li>",$content);
+   
+	
+	//determine loop for title
+	if( $isWPBVC ) {
+		$detail_pairs = 10;
+	}
+	else {
+		$detail_pairs = count($pairarray)-1;
+	}
+	
 	//create opening containers
-	$finaloutput = "
-	<div class='detailBox'>
-		<div class='detailBox-left'>";
+	$finaloutput = '
+	<div class="detailBox">
+		<div class="detailBox-left">';
 	//loop creates triggers on left side of detailbox
 	$i = 1;
-	while( $i <= 10 ) {
+	while( $i <= $detail_pairs ) {
 	
 		$currenttitle = 'detailtitle' . $i;
 		$currenttitle = $atts[$currenttitle];
@@ -138,7 +156,7 @@ function cAc_detail_box_shortcode( $atts, $content = null ) {
 	
 	}	//end while( $i <= 10 )
 	//close right and container divs
-	$finaloutput = $finaloutput."
+	$finaloutput .= "
 		</div>
 	</div>";
 	return $finaloutput;
