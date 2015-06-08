@@ -1,30 +1,37 @@
-.page .page #wrap #inner .wrap #content div.wpb_row.innerRowWrap.dboxsection {
+.page .page #wrap #inner .wrap #content div.wpb_row.dboxsection {
 	padding: 0;
 }
 
-.innerRowWrap .detailBox {
-	background-color: #555;
+.vc_row .detailBox,
+.detailBox {
+	background-color: transparent;
 	background-color: rgba(0, 0, 0, .2);
 	padding: 2em;
 }
 
-.innerRowWrap .detailBox:before,
-.innerRowWrap .detailBox:after {
+.vc_row .detailBox:before,
+.vc_row .detailBox:after,
+.detailBox:before,
+.detailBox:after {
 	display: table;
 	height: 0;
 	content: "";
 }
 
-.innerRowWrap .detailBox:before {
+.vc_row .detailBox:before,
+.detailBox:before {
 	margin-left: 0;
 }
 
-.innerRowWrap .detailBox:after {
+.vc_row .detailBox:after,
+.detailBox:after  {
 	clear: both;
 }
 
-.innerRowWrap .detailBox .detailBox-left,
-.innerRowWrap .detailBox .detailBox-right {
+.vc_row .detailBox .detailBox-left,
+.vc_row .detailBox .detailBox-right,
+.detailBox .detailBox-left,
+.detailBox .detailBox-right {
 	width: 49%;
 	float: left;
 	-webkit-box-sizing: border-box;
@@ -34,7 +41,8 @@
 	overflow: hidden;
 }
 
-.innerRowWrap .detailBox .detailBoxTrigger {
+.vc_row .detailBox .detailBoxTrigger,
+.detailBox .detailBoxTrigger {
 	display: inline-block;
 	position: relative;
 	font-size: 1.25em;
@@ -44,7 +52,8 @@
 	margin-right: 1em;
 }
 
-.innerRowWrap .detailBox .detailBoxTrigger:after {
+.vc_row .detailBox .detailBoxTrigger:after,
+.detailBox .detailBoxTrigger:after {
     content: "\f105";
     font-family: FontAwesome;
     font-style: normal;
@@ -57,7 +66,8 @@
     right: -1em;
 }
 
-.innerRowWrap .detailBox .detailBox-right .detailBox-mobile-back:before {
+.vc_row .detailBox .detailBox-right .detailBox-mobile-back:before,
+.detailBox .detailBox-right .detailBox-mobile-back:before {
 	content: "\f100"; 
 	font-family: FontAwesome;
 	font-style: normal;
@@ -70,51 +80,56 @@
 	left: 0;
 }
 
-.innerRowWrap.orange .detailBox .detailBoxTrigger:after,
-.innerRowWrap.orange .detailBox .detailBox-right .detailBox-mobile-back:before {
+.vc_row.orange .detailBox .detailBoxTrigger:after,
+.vc_row.orange .detailBox .detailBox-right .detailBox-mobile-back:before {
 	color: #004d72;
 }
 
-.innerRowWrap.darkblue .detailBox .detailBoxTrigger:after,
-.innerRowWrap.darkblue .detailBox .detailBox-right .detailBox-mobile-back:before {
+.vc_row.darkblue .detailBox .detailBoxTrigger:after,
+.vc_row.darkblue .detailBox .detailBox-right .detailBox-mobile-back:before {
 	color: #f37f37;
 }
 
-.innerRowWrap.lightblue .detailBox .detailBoxTrigger:after,
-.innerRowWrap.lightblue .detailBox .detailBox-right .detailBox-mobile-back:before {
+.vc_row.lightblue .detailBox .detailBoxTrigger:after,
+.vc_row.lightblue .detailBox .detailBox-right .detailBox-mobile-back:before {
 	color: #004d72;
 }
 
-.innerRowWrap .detailBox .detailBoxTrigger-container.active .detailBoxTrigger:after {
+.vc_row .detailBox .detailBoxTrigger-container.active .detailBoxTrigger:after,
+.detailBox .detailBoxTrigger-container.active .detailBoxTrigger:after {
 	content: "\f104";
 }
 
-.innerRowWrap .detailBox .detailBoxTrigger:hover,
-.innerRowWrap .detailBox .detailBoxTrigger-container.active .detailBoxTrigger ,
-.innerRowWrap.darkblue .detailBox .detailBoxTrigger:hover,
-.innerRowWrap.darkblue .detailBox .detailBoxTrigger-container.active .detailBoxTrigger {
+.vc_row .detailBox .detailBoxTrigger:hover,
+.vc_row .detailBox .detailBoxTrigger-container.active .detailBoxTrigger,
+.detailBox .detailBoxTrigger:hover,
+.detailBox .detailBoxTrigger-container.active .detailBoxTrigger,
+.vc_row.darkblue .detailBox .detailBoxTrigger:hover,
+.vc_row.darkblue .detailBox .detailBoxTrigger-container.active .detailBoxTrigger {
 	color: #f36f37;
 }
 
-.innerRowWrap.orange .detailBox .detailBoxTrigger:hover,
-.innerRowWrap.orange .detailBox .detailBoxTrigger-container.active .detailBoxTrigger,
-.innerRowWrap.lightblue .detailBox .detailBoxTrigger:hover,
-.innerRowWrap.lightblue .detailBox .detailBoxTrigger-container.active .detailBoxTrigger {
+.vc_row.orange .detailBox .detailBoxTrigger:hover,
+.vc_row.orange .detailBox .detailBoxTrigger-container.active .detailBoxTrigger,
+.vc_row.lightblue .detailBox .detailBoxTrigger:hover,
+.vc_row.lightblue .detailBox .detailBoxTrigger-container.active .detailBoxTrigger {
 	color: #004d72;
 }
 
-.innerRowWrap .detailBox .detailBoxTrigger-container.active .detailBoxTrigger:hover {
+.vc_row .detailBox .detailBoxTrigger-container.active .detailBoxTrigger:hover,
+.detailBox .detailBoxTrigger-container.active .detailBoxTrigger:hover {
 	color: #004d72;
 	cursor: default;
 }
 
-.innerRowWrap.darkblue .detailBox .detailBoxTrigger-container.active .detailBoxTrigger:hover,
-.innerRowWrap.orange .detailBox .detailBoxTrigger-container.active .detailBoxTrigger:hover,
-.innerRowWrap.lightblue .detailBox .detailBoxTrigger-container.active .detailBoxTrigger:hover {
+.vc_row.darkblue .detailBox .detailBoxTrigger-container.active .detailBoxTrigger:hover,
+.vc_row.orange .detailBox .detailBoxTrigger-container.active .detailBoxTrigger:hover,
+.vc_row.lightblue .detailBox .detailBoxTrigger-container.active .detailBoxTrigger:hover {
 	color: #fff;
 }
 
-.innerRowWrap .detailBox .detailBox-right {
+.vc_row .detailBox .detailBox-right,
+.detailBox .detailBox-right {
 	background-size: contain;
 	background-repeat: no-repeat;
 	background-position: 60%;
@@ -124,23 +139,25 @@
 	height: 100%;
 }
 
-.innerRowWrap.orange .detailBox .detailBox-right {
+.vc_row.orange .detailBox .detailBox-right {
 	background-image: url(images/clicklearnmore-org.svg);
 }
 
-.innerRowWrap.darkblue .detailBox .detailBox-right {
+.vc_row.darkblue .detailBox .detailBox-right {
 	background-image: url(images/clicklearnmore-dbl.svg);
 }
 
-.innerRowWrap.lightblue .detailBox .detailBox-right {
+.vc_row.lightblue .detailBox .detailBox-right {
 	background-image: url(images/clicklearnmore-lbl.svg);
 }
 
-.innerRowWrap .detailBox .detailBox-right.active {
+.vc_row .detailBox .detailBox-right.active,
+.detailBox .detailBox-right.active {
 	background: transparent !important;
 }
 
-.innerRowWrap .detailBox .detailBox-detail {
+.vc_row .detailBox .detailBox-detail,
+.detailBox .detailBox-detail {
 	position: absolute;
     height: 100%;
     width: 95%;
@@ -148,7 +165,8 @@
 	padding-left: 1em;
 }
 
-.innerRowWrap .detailBox .detailBox-right .detailBox-mobile {
+.vc_row .detailBox .detailBox-right .detailBox-mobile,
+.detailBox .detailBox-right .detailBox-mobile {
 	display: none;
 }
 
@@ -157,7 +175,7 @@
 
 @media only screen and (max-width: 640px) {
 
-	.innerRowWrap .detailBox {
+	.vc_row .detailBox {
 		width: 1280px;
 		position: relative;
 		-webkit-transition: left 300ms cubic-bezier(0.580, 1, 0.835, 1); /* older webkit */
@@ -169,38 +187,38 @@
 		padding: 3em;
 	}
 	
-	.innerRowWrap .detailBox.shifted {
+	.vc_row .detailBox.shifted {
 		left: -640px;
 	}
 	
-	.innerRowWrap .detailBox .detailBox-left {
+	.vc_row .detailBox .detailBox-left {
 		opacity: 1;
 	}
 	
-	.innerRowWrap .detailBox .detailBox-right {
+	.vc_row .detailBox .detailBox-right {
 		opacity: 0;
 	}
 	
-	.innerRowWrap .detailBox.shifted .detailBox-left {
+	.vc_row .detailBox.shifted .detailBox-left {
 		opacity: 0;
 	}
 	
-	.innerRowWrap .detailBox.shifted .detailBox-right {
+	.vc_row .detailBox.shifted .detailBox-right {
 		opacity: 1;
 	}
 	
-	.innerRowWrap .detailBox .detailBox-detail,
-	.innerRowWrap .detailBox .detailBox-right {
+	.vc_row .detailBox .detailBox-detail,
+	.vc_row .detailBox .detailBox-right {
 		max-width: 445px;
 		padding-left: 0;
 	}
 	
-	.innerRowWrap .detailBox .detailBox-right .detailBox-mobile {
+	.vc_row .detailBox .detailBox-right .detailBox-mobile {
 		display: block;
 		margin-bottom: 1em;
 	}
 	
-	.innerRowWrap .detailBox .detailBox-right .detailBox-mobile-back {
+	.vc_row .detailBox .detailBox-right .detailBox-mobile-back {
 		font-size: 1.25em;
 		text-transform: uppercase;
 		padding: 0 1em;
@@ -209,7 +227,7 @@
 		vertical-align: top;
 	}
 	
-	.innerRowWrap .detailBox .detailBox-right .detailBox-mobile-title {
+	.vc_row .detailBox .detailBox-right .detailBox-mobile-title {
 		font-size: 1.25em;
 		text-align: center;
 		width: 400px;
@@ -222,47 +240,47 @@
 
 @media only screen and (max-width: 500px) {
 
-	.innerRowWrap .detailBox {
+	.vc_row .detailBox {
 		width: 640px;
 		padding: 1em;
 	}
 	
-	.innerRowWrap .detailBox .detailBox-left, 
-	.innerRowWrap .detailBox .detailBox-right {
+	.vc_row .detailBox .detailBox-left, 
+	.vc_row .detailBox .detailBox-right {
 		width: 45%;
 		min-height: 480px;
 	}
 	
-	.innerRowWrap .detailBox .detailBox-left {
+	.vc_row .detailBox .detailBox-left {
 		margin-right: 1em;
 	}
 	
-	.innerRowWrap .detailBox .detailBoxTrigger {
+	.vc_row .detailBox .detailBoxTrigger {
 		width: 85%;
 	}
 	
-	.innerRowWrap .detailBox.shifted {
+	.vc_row .detailBox.shifted {
 		left: -320px;
 	}
 	
-	.innerRowWrap .detailBox .detailBox-right .detailBox-mobile-back {
+	.vc_row .detailBox .detailBox-right .detailBox-mobile-back {
 		left: 1em;
 	}
 	
-	.innerRowWrap .detailBox .detailBox-right .detailBox-mobile-title {
+	.vc_row .detailBox .detailBox-right .detailBox-mobile-title {
 		width: auto;
 	}
 	
-	.innerRowWrap .detailBox .detailBox-detail, .innerRowWrap .detailBox .detailBox-right {
+	.vc_row .detailBox .detailBox-detail, .vc_row .detailBox .detailBox-right {
 		max-width: 280px;
 	}
 	
-	.innerRowWrap .detailBox .detailBox-detail {
+	.vc_row .detailBox .detailBox-detail {
 		max-width: 250px;
 		padding-left: 2em;
 	}
 	
-	.innerRowWrap .detailBox .detailBox-right .detailBox-mobile-title {
+	.vc_row .detailBox .detailBox-right .detailBox-mobile-title {
 		text-align: left;
 		padding-left: 32px;
 	}
