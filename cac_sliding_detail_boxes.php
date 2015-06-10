@@ -24,7 +24,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 ****/
 
 define( 'CAC_DETAIL_BOX_URL', plugin_dir_url( __FILE__ ) );
-
+include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+define( 'CAC_DETAIL_BOX_WPBVC', true );
 
 
 /****
@@ -59,10 +60,10 @@ if ( !shortcode_exists( 'detailbox' ) ) {
 }	//end if ( !shortcode_exists( 'detailbox' ) )
 function cAc_detail_box_shortcode( $atts, $content = null ) {
 
-   extract( shortcode_atts( array(
+   $atts = shortcode_atts( array(
    
 		'bgcolor'			=> 'transparent',
-		'isWPBVC'			=> false,
+
 		'detailtitle1'		=> 'Click Here',
 		'detailcontent1'	=> 'This is the information',
 		'detailtitle2'		=> '',
@@ -82,12 +83,13 @@ function cAc_detail_box_shortcode( $atts, $content = null ) {
 		'detailtitle9'		=> '',
 		'detailcontent9'	=> '',
 		'detailtitle10'		=> '',
-		'detailcontent10'	=> ''
+		'detailcontent10'	=> '',
   
-   ), $atts ) );
+   ), $atts, 'detailbox' );
    
 	//where title => detail is stored for processing based on user input and context
 	$details = array();
+	$debug = '<p class="debug">WPBVC='.print_r(CAC_DETAIL_BOX_WPBVC,true).'<br />Atts='.print_r($atts,true).'</p>';
  	
  	// fix unclosed/unwanted paragraph tags in $content
  	if( function_exists( 'wpb_js_remove_wpautop') ) {
@@ -98,19 +100,30 @@ function cAc_detail_box_shortcode( $atts, $content = null ) {
 	
 	
 	//determine loop for title
-	if( $isWPBVC ) {
+	if( CAC_DETAIL_BOX_WPBVC ) {
 	
 		for( $i=1; $i<11; $i++ ) {
 		
 			$currentT = 'detailtitle' . $i;
 			$currentD = 'detailcontent' . $i;
-			if( ! empty( $atts[$currentT] ) ) {
+			
+			if( !empty( $atts[$currentT] ) ) {
 			
 				$details[ $atts[$currentT] ] = rawurldecode( base64_decode( strip_tags( $atts[$currentD] ) ) );
 			
 			}	//end if( ! empty( $atts[$currentT] ) )
+			else {
+			
+				$details[ $currentT ] = $atts[$currentD]; 
+			
+			}
+			
 		
 		}	//end for( $i=1; $i<11; $i++ )
+		
+		$debug .= '<h1>details</h1><p>'.
+		print_r($details,true)
+		.'</p>';
 	
 	}
 	else {
@@ -163,7 +176,7 @@ function cAc_detail_box_shortcode( $atts, $content = null ) {
 	
 		}	//end for( $i = 1; $i < ( $detail_pairs + 1 );  $i+=2 )
 		
-		echo(esc_html( print_r( $details, true )));
+// 		echo(esc_html( print_r( $details, true )));
 
 /****
 
@@ -181,12 +194,12 @@ function cAc_detail_box_shortcode( $atts, $content = null ) {
 	//return $content if there are no pairs (null if there's nothing in the shortcode, content not separated by <hr/> elements if they're not set up right, nothing ('') if all vc fields are empty
 	if( count( $details ) == 0 ) {
 	 
- 		return $content ;
+//  		return $content;
 	 
 	}	//end if( count( $details ) == 0 )
 	
 	//create opening container tags if we have valid pairs (indcluding mobile controls on right side)
-	if( $bgcolor != '' && $bgcolor != 'transparent' ) {
+	if( $atts['bgcolor'] != '' && $atts['bgcolor'] != 'transparent' ) {
 	
 		$bgcolor_class = ' background-' . str_replace( '#', '', $bgcolor );
 		$bgcolor_style = ' style="background-color: ' . $bgcolor . '"';
@@ -214,6 +227,7 @@ function cAc_detail_box_shortcode( $atts, $content = null ) {
 	$finaloutput .= $leftside . '</div>';
 	$finaloutput .= $rightside . '</div>';
 	$finaloutput .= '</div>';
+	$finaloutput .= $debug;
 	return $finaloutput;
 
 }	//end cAc_detail_box( $atts, $content = null )
@@ -224,27 +238,31 @@ function cAc_detail_box_shortcode( $atts, $content = null ) {
 	Visual Composer Mapping
 ****/
 
+// function cAc_vc_hidden_field( $settings, $value ) {
+// 	
+// 		return '<div class="cAc-vc-hidden-field" style="height:0; overflow: hidden;">
+// 		<input name="' . esc_attr( $settings['param_name'] ) . '" class="wpb_vc_param_value wpb-textinput ' .
+//              esc_attr( $settings['param_name'] ) . ' ' .
+//              esc_attr( $settings['type'] ) . '_field" type="hidden" value="1" />' .
+// 		'</div>';
+// 	
+// }	//end cAc_vc_hidden_field( $settings, $value )
+
+add_action( 'vc_before_init', 'cac_detail_box_vc' );
+function cac_detail_box_vc() {
 if( function_exists( 'vc_map' ) ) {
 
 	//adding hidden param type 'cAc_hidden'
-	add_shortcode_param( 'cAc_hidden' , 'cAc_vc_hidden_field' );
-	function cAc_vc_hidden_field( $settings, $value ) {
-	
-		return '<div class="cAc-vc-hidden-field" style="height:0; overflow: hidden;">
-		<input name="' . esc_attr( $settings['param_name'] ) . '" class="wpb_vc_param_value wpb-textinput ' .
-             esc_attr( $settings['param_name'] ) . ' ' .
-             esc_attr( $settings['type'] ) . '_field" type="hidden" value="' . esc_attr( $value ) . '" />' .
-		'</div>';
-	
-	}	//end cAc_vc_hidden_field( $settings, $value )
+// 	add_shortcode_param( 'cAc_hidden' , 'cAc_vc_hidden_field' );
 
 	vc_map( 
 		array(
-		   "name" => __("Detail Box"),
+		   "name" => "Detail Box",
 		   "base" => "detailbox",
 		   "class" => "",
 		   "icon" => "icon-wpb-detailBox",
 		   "category" => __('Content'),
+		   'admin_enqueue_css' => CAC_DETAIL_BOX_URL . 'vc_extend/icons.css',
 		   "params" => array(
 		   
 				array(
@@ -258,9 +276,13 @@ if( function_exists( 'vc_map' ) ) {
 				),
 				array(
 					"type" => "cAc_hidden",
+// 					"type" => "textfield",
 					"class" => "",
 					"param_name" => "isWPBVC",
-					"value" => true
+					"value" => 1,
+					"admin_label" => False,
+					"heading" => '',
+					"description" => '',
 				),
 				array(
 					"type" => "textfield",
@@ -270,7 +292,7 @@ if( function_exists( 'vc_map' ) ) {
 					"param_name" => "detailtitle1",
 					"value" => __("Click Here"),
 					"description" => __("Enter the title for the first item."),
-					"admin_label" => True
+					"admin_label" => False
 				),
 				array(
 					"type" => "textarea_raw_html",
@@ -290,7 +312,7 @@ if( function_exists( 'vc_map' ) ) {
 					"param_name" => "detailtitle2",
 					"value" => __(""),
 					"description" => __("Enter the title for the second item."),
-					"admin_label" => True
+					"admin_label" => False
 				),
 				array(
 					"type" => "textarea_raw_html",
@@ -310,7 +332,7 @@ if( function_exists( 'vc_map' ) ) {
 					"param_name" => "detailtitle3",
 					"value" => __(""),
 					"description" => __("Enter the title for the third item."),
-					"admin_label" => True
+					"admin_label" => False
 				),
 				array(
 					"type" => "textarea_raw_html",
@@ -330,7 +352,7 @@ if( function_exists( 'vc_map' ) ) {
 					"param_name" => "detailtitle4",
 					"value" => __(""),
 					"description" => __("Enter the title for the fourth item."),
-					"admin_label" => True
+					"admin_label" => False
 				),
 				array(
 					"type" => "textarea_raw_html",
@@ -350,7 +372,7 @@ if( function_exists( 'vc_map' ) ) {
 					"param_name" => "detailtitle5",
 					"value" => __(""),
 					"description" => __("Enter the title for the fifth item."),
-					"admin_label" => True
+					"admin_label" => False
 				),
 				array(
 					"type" => "textarea_raw_html",
@@ -370,7 +392,7 @@ if( function_exists( 'vc_map' ) ) {
 					"param_name" => "detailtitle6",
 					"value" => __(""),
 					"description" => __("Enter the title for the sixth item."),
-					"admin_label" => True
+					"admin_label" => False
 				),
 				array(
 					"type" => "textarea_raw_html",
@@ -390,7 +412,7 @@ if( function_exists( 'vc_map' ) ) {
 					"param_name" => "detailtitle7",
 					"value" => __(""),
 					"description" => __("Enter the title for the seventh item."),
-					"admin_label" => True
+					"admin_label" => False
 				),
 				array(
 					"type" => "textarea_raw_html",
@@ -410,7 +432,7 @@ if( function_exists( 'vc_map' ) ) {
 					"param_name" => "detailtitle8",
 					"value" => __(""),
 					"description" => __("Enter the title for the eighth item."),
-					"admin_label" => True
+					"admin_label" => False
 				),
 				array(
 					"type" => "textarea_raw_html",
@@ -430,7 +452,7 @@ if( function_exists( 'vc_map' ) ) {
 					"param_name" => "detailtitle9",
 					"value" => __(""),
 					"description" => __("Enter the title for the ninth item."),
-					"admin_label" => True
+					"admin_label" => False
 				),
 				array(
 					"type" => "textarea_raw_html",
@@ -450,7 +472,7 @@ if( function_exists( 'vc_map' ) ) {
 					 "param_name" => "detailtitle10",
 					 "value" => __(""),
 					 "description" => __("Enter the title for the tenth item."),
-					 "admin_label" => True
+					 "admin_label" => False
 				),
 				array(
 					"type" => "textarea_raw_html",
@@ -468,3 +490,5 @@ if( function_exists( 'vc_map' ) ) {
 	);	//end vc_map Detail Box
 
 }	//end if( function_exists( 'vc_map' ) )
+
+}	//end cac_detail_box_vc()
