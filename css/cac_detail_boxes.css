@@ -286,3 +286,11 @@
 	}
 
 }
+
+p.debug {
+	display: block;
+	float: right;
+	background: #DDD;
+	font-size: 14px;
+	clear: both;
+}

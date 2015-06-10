@@ -24,471 +24,647 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 ****/
 
 define( 'CAC_DETAIL_BOX_URL', plugin_dir_url( __FILE__ ) );
-include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-define( 'CAC_DETAIL_BOX_WPBVC', true );
 
 
 /****
-	Enqueue
+	Class Definition for Shortcode
 ****/
 
-add_action( 'wp_enqueue_scripts', 'cAc_detail_box_queuing' );
-function cAc_detail_box_queuing() {
+class cAc_sliding_detail_box_shortcode {
 
-	wp_register_script( 'cAc_detail_box', CAC_DETAIL_BOX_URL . 'js/cac_detail_boxes.js', array( 'jquery', 'jquery-ui-core', 'jquery-effects-slide' ), '1.0' );
-	wp_register_style( 'cAc_detail_box', CAC_DETAIL_BOX_URL . 'css/cac_detail_boxes.css', array( 'dashicons' ), '1.0' );
-	
-	wp_enqueue_style( 'dashicons' );
-	wp_enqueue_style( 'cAc_detail_box' );
-	wp_enqueue_script( 'cAc_detail_box' );
+	/****
+		Class Statics & Vars
+	****/
 
-}
-
-
-
-/****
-	Shortcode for detailbox
-****/
-
-//usage -[detailbox detailtitle[n]='title' detailcontent[n]='This is the info.']
-//where [n] is the integer (1-10) corresponding to the number of the title & content pair in the detailbox
-
-if ( !shortcode_exists( 'detailbox' ) ) {
-
-	add_shortcode( 'detailbox', 'cAc_detail_box_shortcode' );
-
-}	//end if ( !shortcode_exists( 'detailbox' ) )
-function cAc_detail_box_shortcode( $atts, $content = null ) {
-
-   $atts = shortcode_atts( array(
-   
-		'bgcolor'			=> 'transparent',
-
-		'detailtitle1'		=> 'Click Here',
-		'detailcontent1'	=> 'This is the information',
-		'detailtitle2'		=> '',
-		'detailcontent2'	=> '',
-		'detailtitle3'		=> '',
-		'detailcontent3'	=> '',
-		'detailtitle4'		=> '',
-		'detailcontent4'	=> '',
-		'detailtitle5'		=> '',
-		'detailcontent5'	=> '',
-		'detailtitle6'		=> '',
-		'detailcontent6'	=> '',
-		'detailtitle7'		=> '',
-		'detailcontent7'	=> '',
-		'detailtitle8'		=> '',
-		'detailcontent8'	=> '',
-		'detailtitle9'		=> '',
-		'detailcontent9'	=> '',
-		'detailtitle10'		=> '',
-		'detailcontent10'	=> '',
-  
-   ), $atts, 'detailbox' );
-   
-	//where title => detail is stored for processing based on user input and context
-	$details = array();
-	$debug = '<p class="debug">WPBVC='.print_r(CAC_DETAIL_BOX_WPBVC,true).'<br />Atts='.print_r($atts,true).'</p>';
- 	
- 	// fix unclosed/unwanted paragraph tags in $content
- 	if( function_exists( 'wpb_js_remove_wpautop') ) {
- 	
-		$content = wpb_js_remove_wpautop( $content ); 
-	
-	}	//end if( function_exists( 'wpb_js_remove_wpautop') )
+	public static $current_instance;
+	public $active_instances;
+	protected $_default_atts;
 	
 	
-	//determine loop for title
-	if( CAC_DETAIL_BOX_WPBVC ) {
 	
-		for( $i=1; $i<11; $i++ ) {
+	/****
+		Constructor
+	****/
+	
+	function __construct() {
+	
+		$this->current_instance = 0;
+		$this->active_instances = array();
+		$this->_default_atts = array(
+
+			'bgcolor'			=> 'transparent',
+			'detailtitle1'		=> 'Click Here',
+			'detailcontent1'	=> 'This is the information',
+			'detailtitle2'		=> '',
+			'detailcontent2'	=> '',
+			'detailtitle3'		=> '',
+			'detailcontent3'	=> '',
+			'detailtitle4'		=> '',
+			'detailcontent4'	=> '',
+			'detailtitle5'		=> '',
+			'detailcontent5'	=> '',
+			'detailtitle6'		=> '',
+			'detailcontent6'	=> '',
+			'detailtitle7'		=> '',
+			'detailcontent7'	=> '',
+			'detailtitle8'		=> '',
+			'detailcontent8'	=> '',
+			'detailtitle9'		=> '',
+			'detailcontent9'	=> '',
+			'detailtitle10'		=> '',
+			'detailcontent10'	=> '',
+
+		);
 		
-			$currentT = 'detailtitle' . $i;
-			$currentD = 'detailcontent' . $i;
+		if ( !shortcode_exists( 'detailbox' ) ) {
+
+			add_action( 'wp_enqueue_scripts', array( $this, 'cAc_detail_box_queuing' ) );
+			add_shortcode( 'detailbox', array( $this, 'cAc_detail_box_shortcode' ) );
+			add_action( 'vc_before_init', array( $this, 'cAc_detail_box_vc' ) );
+
+		}	//end if ( !shortcode_exists( 'detailbox' ) )
+	
+	}	//end __construct()
+	
+	
+	/****
+		Class Methods
+	****/
+	
+	//front end styles and scripts
+	public function cAc_detail_box_queuing() {
+
+		wp_register_script( 'cAc_detail_box', CAC_DETAIL_BOX_URL . 'js/cac_detail_boxes.js', array( 'jquery', 'jquery-ui-core', 'jquery-effects-slide' ), '1.0' );
+		wp_register_style( 'cAc_detail_box', CAC_DETAIL_BOX_URL . 'css/cac_detail_boxes.css', array( 'dashicons' ), '1.0' );
+		wp_enqueue_style( 'dashicons' );
+		wp_enqueue_style( 'cAc_detail_box' );
+		wp_enqueue_script( 'cAc_detail_box' );
+
+	}
+	
+	
+	
+	//shortcode handler
+	public function cAc_detail_box_shortcode( $atts, $content = null ) {
+
+		$atts = shortcode_atts( $this->_default_atts, $atts, 'detailbox' );
+		$this->current_instance++;
+		$atts['instance'] = $this->current_instance;
+		$detail_box = new cAc_detail_box( $atts, $content );
+		if( $detail_box->id === 'empty') {
+		
+			return $content;
+		
+		}	//end if( $detail_box->id === 'empty')
+		array_push( $this->active_instances, $detail_box->id );
+		return $detail_box->html_output;
+
+	}	//end cAc_detail_box( $atts, $content = null )
+	
+	
+	
+	//create vc element
+	public function cAc_detail_box_vc() {
+		if( function_exists( 'vc_map' ) ) {
+
+			vc_map( 
+				array(
+				   "name" => "Detail Box",
+				   "base" => "detailbox",
+				   "class" => "",
+				   "icon" => "icon-wpb-detailBox",
+				   "category" => __('Content'),
+				   'admin_enqueue_css' => CAC_DETAIL_BOX_URL . 'vc_extend/icons.css',
+				   "params" => array(
+		   
+						array(
+							"type" => "colorpicker",
+							"class" => "",
+							"heading" => 'Background Color',
+							"param_name" => "bgcolor",
+							"value" => '', 
+							"description" => 'Select background color for the Detail Box',
+							"admin_label" => True
+						),
+						array(
+							"type" => "textfield",
+							"holder" => "div",
+							"class" => "",
+							"heading" => __("Title 1"),
+							"param_name" => "detailtitle1",
+							"value" => __("Click Here"),
+							"description" => __("Enter the title for the first item."),
+							"admin_label" => False
+						),
+						array(
+							"type" => "textarea_raw_html",
+							"holder" => "div",
+							"class" => "",
+							"heading" => __("Content 1"),
+							"param_name" => "detailcontent1",
+							"value" => __("<p>I am test text block. Click edit button to change this text.</p>"),
+							"description" => __("Enter the content for the first item."),
+							"admin_label" => False
+						),
+						array(
+							"type" => "textfield",
+							"holder" => "div",
+							"class" => "",
+							"heading" => __("Title 2"),
+							"param_name" => "detailtitle2",
+							"value" => __(""),
+							"description" => __("Enter the title for the second item."),
+							"admin_label" => False
+						),
+						array(
+							"type" => "textarea_raw_html",
+							"holder" => "div",
+							"class" => "",
+							"heading" => __("Content 2"),
+							"param_name" => "detailcontent2",
+							"value" => __(""),
+							"description" => __("Enter the content for the second item."),
+							"admin_label" => False
+						),
+						array(
+							"type" => "textfield",
+							"holder" => "div",
+							"class" => "",
+							"heading" => __("Title 3"),
+							"param_name" => "detailtitle3",
+							"value" => __(""),
+							"description" => __("Enter the title for the third item."),
+							"admin_label" => False
+						),
+						array(
+							"type" => "textarea_raw_html",
+							"holder" => "div",
+							"class" => "",
+							"heading" => __("Content 3"),
+							"param_name" => "detailcontent3",
+							"value" => __(""),
+							"description" => __("Enter the content for the third item."),
+							"admin_label" => False
+						),
+						array(
+							"type" => "textfield",
+							"holder" => "div",
+							"class" => "",
+							"heading" => __("Title 4"),
+							"param_name" => "detailtitle4",
+							"value" => __(""),
+							"description" => __("Enter the title for the fourth item."),
+							"admin_label" => False
+						),
+						array(
+							"type" => "textarea_raw_html",
+							"holder" => "div",
+							"class" => "",
+							"heading" => __("Content 4"),
+							"param_name" => "detailcontent4",
+							"value" => __(""),
+							"description" => __("Enter the content for the fourth item."),
+							"admin_label" => False
+						),
+						array(
+							"type" => "textfield",
+							"holder" => "div",
+							"class" => "",
+							"heading" => __("Title 5"),
+							"param_name" => "detailtitle5",
+							"value" => __(""),
+							"description" => __("Enter the title for the fifth item."),
+							"admin_label" => False
+						),
+						array(
+							"type" => "textarea_raw_html",
+							"holder" => "div",
+							"class" => "",
+							"heading" => __("Content 5"),
+							"param_name" => "detailcontent5",
+							"value" => __(""),
+							"description" => __("Enter the content for the fifth item."),
+							"admin_label" => False
+						),
+						array(
+							"type" => "textfield",
+							"holder" => "div",
+							"class" => "",
+							"heading" => __("Title 6"),
+							"param_name" => "detailtitle6",
+							"value" => __(""),
+							"description" => __("Enter the title for the sixth item."),
+							"admin_label" => False
+						),
+						array(
+							"type" => "textarea_raw_html",
+							"holder" => "div",
+							"class" => "",
+							"heading" => __("Content 6"),
+							"param_name" => "detailcontent6",
+							"value" => __(""),
+							"description" => __("Enter the content for the sixth item."),
+							"admin_label" => False
+						),
+						array(
+							"type" => "textfield",
+							"holder" => "div",
+							"class" => "",
+							"heading" => __("Title 7"),
+							"param_name" => "detailtitle7",
+							"value" => __(""),
+							"description" => __("Enter the title for the seventh item."),
+							"admin_label" => False
+						),
+						array(
+							"type" => "textarea_raw_html",
+							"holder" => "div",
+							"class" => "",
+							"heading" => __("Content 7"),
+							"param_name" => "detailcontent7",
+							"value" => __(""),
+							"description" => __("Enter the content for the seventh item."),
+							"admin_label" => False
+						),
+						array(
+							"type" => "textfield",
+							"holder" => "div",
+							"class" => "",
+							"heading" => __("Title 8"),
+							"param_name" => "detailtitle8",
+							"value" => __(""),
+							"description" => __("Enter the title for the eighth item."),
+							"admin_label" => False
+						),
+						array(
+							"type" => "textarea_raw_html",
+							"holder" => "div",
+							"class" => "",
+							"heading" => __("Content 8"),
+							"param_name" => "detailcontent8",
+							"value" => __(""),
+							"description" => __("Enter the content for the eighth item."),
+							"admin_label" => False
+						),
+						array(
+							"type" => "textfield",
+							"holder" => "div",
+							"class" => "",
+							"heading" => __("Title 9"),
+							"param_name" => "detailtitle9",
+							"value" => __(""),
+							"description" => __("Enter the title for the ninth item."),
+							"admin_label" => False
+						),
+						array(
+							"type" => "textarea_raw_html",
+							"holder" => "div",
+							"class" => "",
+							"heading" => __("Content 9"),
+							"param_name" => "detailcontent9",
+							"value" => __(""),
+							"description" => __("Enter the content for the ninth item."),
+							"admin_label" => False
+						),
+						array(
+							 "type" => "textfield",
+							 "holder" => "div",
+							 "class" => "",
+							 "heading" => __("Title 10"),
+							 "param_name" => "detailtitle10",
+							 "value" => __(""),
+							 "description" => __("Enter the title for the tenth item."),
+							 "admin_label" => False
+						),
+						array(
+							"type" => "textarea_raw_html",
+							"holder" => "div",
+							"class" => "",
+							"heading" => __("Content 10"),
+							"param_name" => "detailcontent10",
+							"value" => __(""),
+							"description" => __("Enter the content for the tenth item."),
+							"admin_label" => False
+						),
+
+					)	// end params
+		
+				)	// end args
+	
+			);	//end vc_map Detail Box
+
+		}	//end if( function_exists( 'vc_map' ) )
+
+	}	//end cac_detail_box_vc()
+
+
+}	//end cAc_sliding_detail_box_shortcode
+
+
+
+/****
+	Class Definition for a single Detail Box
+****/
+
+class cAc_detail_box {
+
+	/****
+		Class Statics & Vars
+	****/
+
+	public $id;
+	public $bgcolor;
+	public $triggers;
+	public $details;
+	public $html_output;
+	
+	
+	
+	/****
+		Constructor
+	****/
+	
+	function __construct( $atts, $content = null ) {
+	
+		if( is_array( $atts ) ) {
+		
+			$this->id = 'cAcDetailBox' . $atts['instance'];
+			if( isset( $atts['bgcolor'] ) && $atts['bgcolor'] !== 'transparent' ) {
 			
-			if( !empty( $atts[$currentT] ) ) {
-			
-				$details[ $atts[$currentT] ] = rawurldecode( base64_decode( strip_tags( $atts[$currentD] ) ) );
-			
-			}	//end if( ! empty( $atts[$currentT] ) )
-			else {
-			
-				$details[ $currentT ] = $atts[$currentD]; 
+				if( isset( $atts['bgopacity'] ) ) {
+				
+					$opacity =  $atts['bgopacity'];
+				
+				}
+				$bgcolor = hex2rgba($bgcolor);
 			
 			}
+			else {
 			
+				$bgcolor = 'transparent';
+			
+			}
+			$this->bgcolor = $atts['bgcolor'];
+			if( empty( $content ) ) {
+			
+				$content = $this->_content_from_atts( $atts );
+			
+			}
+			$detail_content = $this->generate_content( $content );
+			$this->triggers = $detail_content['triggers'];
+			$this->details = $detail_content['details'];
+			$this->html_output = $this->generate_output();
 		
+		}
+		else {
+		
+			$this->id = 'empty';
+		
+		}	//end if( is_array( $atts ) )
+	
+	}	//end __construct()
+	
+	
+	
+	/****
+		Methods
+	****/
+	
+	//returns internal content in array( triggers => array( trigger[0], trigger[1], trigger[2]... ), details => array( detail[0], detail[1], detail[2]... )
+	public function generate_content( $content, $separator = '<hr />' ) {
+	
+		//don't generate content array for empty object
+		if( $this->id !== 'empty' ) {
+		
+			$content_pairs = array(
+			
+				'triggers'	=> array(),
+				'details'	=> array(),
+			
+			);
+			//parse $content if is a string
+			if( !is_array( $content ) ) {
+			
+				$pairarray = explode( $separator, $content );
+				foreach( $pairarray as $pos => $value ) {
+	
+					$value = strip_tags( $value, '<b><i><ul><ol><li><br><strong><em><br />' );
+					$pairarray[$pos] = trim( $value );
+	
+				}	//end foreach( $pairarray as $pos => $value )
+				$how_many = count($pairarray);
+				for( $i = 0; $i < ( $how_many );  $i++ ) {
+	
+					array_push( $content_pairs['triggers'], $pairarray[$i] );
+					$i++;
+					array_push( $content_pairs['details'], $pairarray[$i] );
+	
+				}	//end for( $i = 1; $i < ( $detail_pairs + 1 );  $i+=2 )
+			
+			}	//end if( !is_array( $content ) )
+			//if array has content, return that as content array
+			elseif( isset( $content['triggers'] ) && isset( $content['details'] ) ) {
+			
+				$content_pairs = $content;
+			
+			}
+			//don't generate content array without content
+			else {
+			
+				return false;
+			
+			}	//end if( !is_array( $content ), elseif( isset( $content['triggers'] ) && isset( $content['details'] ) )
+			return $content_pairs;
+		
+		}
+		else {
+		
+			return false;
+		
+		}	//end if( $this->id !== 'empty' )
+	
+	}	//end generate_content( $content, $separator = '<hr />' )
+	
+	
+	
+	//returns html output as string
+	public function generate_output() {
+	
+		if( $this->id !== 'empty' && $this->_cAc_detail_box_struct() ) {
+		
+			return $this->html_output;
+		
+		}
+		else {
+		
+			return false;
+		
+		}	//end if( $this->id !== 'empty' )
+	
+	}	//end generate_output()
+	
+	
+	
+	//set different bgcolor and set html_output using new color
+	public function change_bg( $color, $opacity = false ) {
+	
+		if( $this->id !== 'empty' && isset($this->triggers, $this->details ) ) {
+		
+			$this->bgcolor = hex2rgba( $color, $opacity );
+			return $this->_cAc_detail_box_struct();
+		
+		}
+		else {
+		
+			return false;
+		
+		}	//end if( $this->id !== 'empty' && isset($this->triggers, $this->details ) ) 
+	
+	}	//end change_bg( $color )
+	
+	
+	
+	//use attribute values to generate content array
+	private function _content_from_atts( $atts ){
+	
+		$content = array(
+		
+			'triggers'	=> array(),
+			'details'	=> array(),
+		
+		);
+	
+		for( $i=0; $i<10; $i++ ) {
+
+			$currentT = 'detailtitle' . ($i+1);
+			$currentD = 'detailcontent' . ($i+1);
+			if( !empty( $atts[$currentT] ) ) {
+	
+				$content['triggers'][$i] = $atts[$currentT];
+				$content['details'][$i] = rawurldecode( base64_decode( strip_tags( $atts[$currentD] ) ) );
+	
+			}	//end if( ! empty( $atts[$currentT] )
+
 		}	//end for( $i=1; $i<11; $i++ )
+		return $content;
+	
+	}	//end _content_from_atts( $atts )
+	
+	
+	
+	//return class name for background color as string
+	private function _bgcolorclass() {
+	
+		$class = ' background-' . sanitize_title( str_replace( '#', '', $this->bgcolor ) );
+		return $class;
+	
+	}	//end _bgcolorclass()
+	
+	
+	
+	//return html style attribute for background color as string
+	private function _bgcolorstyle() {
+	
+		if( $this->bgcolor === 'transparent') {
 		
-		$debug .= '<h1>details</h1><p>'.
-		print_r($details,true)
-		.'</p>';
-	
-	}
-	else {
-	
-/****
-
-	$content=
-	
-		'Title 1
+			return '';
 		
-		<hr />
-
-		Detail 1 Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Donec ullamcorper nulla non metus auctor fringilla. Nullam id dolor id nibh ultricies vehicula ut id elit. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Vestibulum id ligula porta felis euismod semper. Maecenas sed diam eget risus varius blandit sit amet non magna. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Maecenas sed diam eget risus varius blandit sit amet non magna.
-
-		<hr />
-
-		Title 2
-
-		<hr />
-
-		Detail 2 Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Curabitur blandit tempus porttitor. Nulla vitae elit libero, a pharetra augue. Cras mattis consectetur purus sit amet fermentum. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Maecenas faucibus mollis interdum. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Nullam quis risus eget urna mollis ornare vel eu leo. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.'
+		}
+		$style = ' style="background-color: ' . $this->bgcolor . '"';
+		return $style;
 	
-****/
+	}	//end _bgcolorstyle()
+	
+	
+	
+	//generate trigger html
+	private function _cAc_detail_box_trigger_html( $id, $content ) {
+	
+		$html = '<div class="detailBoxTrigger-container"><div class="detailBoxTrigger" id="' . $this->id . '-' . $id . '_trigger">' . esc_html( $content ) . '</div></div>';
+		return $html;
+	
+	}	//end _cAc_detail_box_trigger_html( $id, $content )
 
-		$pairarray = explode( "<hr />", $content );
-		foreach( $pairarray as $pos => $value ) {
-	
-			$value = strip_tags( $value, '<b><i><ul><ol><li><br><strong><em><br />' );
-			$pairarray[$pos] = trim( $value );
-	
-		}	//end foreach( $pairarray as $pos => $value )
-	
-/****
 
-	$pairarray = array(
-	
-		0	=> 'Title 1',
-		1	=> 'Detail 1 Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Donec ullamcorper nulla non metus auctor fringilla. Nullam id dolor id nibh ultricies vehicula ut id elit. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Vestibulum id ligula porta felis euismod semper. Maecenas sed diam eget risus varius blandit sit amet non magna. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Maecenas sed diam eget risus varius blandit sit amet non magna.',
-		2	=> 'Title 2',
-		3	=> 'Detail 2 Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Curabitur blandit tempus porttitor. Nulla vitae elit libero, a pharetra augue. Cras mattis consectetur purus sit amet fermentum. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Maecenas faucibus mollis interdum. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Nullam quis risus eget urna mollis ornare vel eu leo. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.'
 
-	)
-
-****/
-
-		$how_many_pairs = count($pairarray);
-		for( $i = 0; $i < ( $how_many_pairs );  $i+=2 ) {
+	//generate details html
+	private function _cAc_detail_box_detail_html( $id, $content ) {
 	
-			$details[ $pairarray[$i] ] = $pairarray[$i+1];
+		$html = '<div class="detailBox-detail" id="' . $this->id . '-' . $id . '">' . strip_tags( $content, '<b><i><ul><ol><li><br><strong><em><br />' ) . '</div>';
+		return $html;
 	
-		}	//end for( $i = 1; $i < ( $detail_pairs + 1 );  $i+=2 )
+	}	//end _cAc_detail_box_detail_html( $id, $content )	
+	
+	
+	
+	//generate html structure for output
+	private function _cAc_detail_box_struct() {
+	
+		$triggers = $this->triggers;
+		$details = $this->details;
+		if( empty( $triggers) || empty( $details ) ) {
+			return false;
+		}
+		//opening tags
+		$html = '<div id="' . $this->id . '" class="detailBox' . $this->_bgcolorclass() . '"' . $this->_bgcolorstyle() . '>';
+		$leftside = '<div class="detailBox-left">';
+		$rightside = '<div class="detailBox-right"><div class="detailBox-mobile"><span class="detailBox-mobile-back">back</span><span class="detailBox-mobile-title">Title</span></div>';
+		//content of each side, with closing tags
+		$how_many = count( $triggers );
+		for( $i=0; $i<$how_many; $i++ ) {
 		
-// 		echo(esc_html( print_r( $details, true )));
-
-/****
-
-	$details = array(
+			$id = 'item-' . ( $i + 1 );
+			$leftside .= $this->_cAc_detail_box_trigger_html( $id, $triggers[$i] );
+			$rightside .= $this->_cAc_detail_box_detail_html( $id, $details[$i] );
+		
+		}	//end for( $i=0; $i<$how_many; $i++ )
+		//put it all together and close containers
+		$html .= $leftside . '</div>' . $rightside . '</div></div>';
+		$this->html_output = $html;
+		return true;
 	
-		'Title 1'	=> 'Detail 1 Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Donec ullamcorper nulla non metus auctor fringilla. Nullam id dolor id nibh ultricies vehicula ut id elit. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Vestibulum id ligula porta felis euismod semper. Maecenas sed diam eget risus varius blandit sit amet non magna. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Maecenas sed diam eget risus varius blandit sit amet non magna.',
-		'Title 2'	=> 'Detail 2 Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Curabitur blandit tempus porttitor. Nulla vitae elit libero, a pharetra augue. Cras mattis consectetur purus sit amet fermentum. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Maecenas faucibus mollis interdum. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Nullam quis risus eget urna mollis ornare vel eu leo. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.'
-	
-	)
+	}	//end cAc_detail_box_struct( $triggers = $this->triggers, $details = $this->details )
 
-****/
-	
-	}	//end if( $isWPBVC )
-	
-	//return $content if there are no pairs (null if there's nothing in the shortcode, content not separated by <hr/> elements if they're not set up right, nothing ('') if all vc fields are empty
-	if( count( $details ) == 0 ) {
-	 
-//  		return $content;
-	 
-	}	//end if( count( $details ) == 0 )
-	
-	//create opening container tags if we have valid pairs (indcluding mobile controls on right side)
-	if( $atts['bgcolor'] != '' && $atts['bgcolor'] != 'transparent' ) {
-	
-		$bgcolor_class = ' background-' . str_replace( '#', '', $bgcolor );
-		$bgcolor_style = ' style="background-color: ' . $bgcolor . '"';
-	
-	}
-	else {
-	
-		$bgcolor_class = '';
-		$bgcolor_style = '';
-	
-	}
-	$finaloutput = '<div class="detailBox' . $bgcolor_class . '"' . $bgcolor_style . '>';
-	$leftside = '<div class="detailBox-left">';
-	$rightside = '<div class="detailBox-right"><div class="detailBox-mobile"><span class="detailBox-mobile-back">back</span><span class="detailBox-mobile-title">Title</span></div>';
-	
-	//loop creates triggers on left side of detailbox and 
-	foreach( $details as $title => $detail ) {
-	
-		$id = strtolower( preg_replace( '/[^A-Za-z0-9]/', '', $title ) );
-		$leftside .='<div class="detailBoxTrigger-container"><div class="detailBoxTrigger" id="' . $id . '_trigger">' . $title . '</div>';
-		$rightside .= '<div class="detailBox-detail" id="' . $id . '">' . $detail . '</div>';
-	
-	}	//end foreach( $detail_pairs as $title => $detail )
-	//add left & right side content; close all container divs
-	$finaloutput .= $leftside . '</div>';
-	$finaloutput .= $rightside . '</div>';
-	$finaloutput .= '</div>';
-	$finaloutput .= $debug;
-	return $finaloutput;
-
-}	//end cAc_detail_box( $atts, $content = null )
+}	//cAc_detail_box
 
 
 
-/****
-	Visual Composer Mapping
-****/
+$cAc_sliding_detail_boxes = new cAc_sliding_detail_box_shortcode();
 
-// function cAc_vc_hidden_field( $settings, $value ) {
-// 	
-// 		return '<div class="cAc-vc-hidden-field" style="height:0; overflow: hidden;">
-// 		<input name="' . esc_attr( $settings['param_name'] ) . '" class="wpb_vc_param_value wpb-textinput ' .
-//              esc_attr( $settings['param_name'] ) . ' ' .
-//              esc_attr( $settings['type'] ) . '_field" type="hidden" value="1" />' .
-// 		'</div>';
-// 	
-// }	//end cAc_vc_hidden_field( $settings, $value )
-
-add_action( 'vc_before_init', 'cac_detail_box_vc' );
-function cac_detail_box_vc() {
-if( function_exists( 'vc_map' ) ) {
-
-	//adding hidden param type 'cAc_hidden'
-// 	add_shortcode_param( 'cAc_hidden' , 'cAc_vc_hidden_field' );
-
-	vc_map( 
-		array(
-		   "name" => "Detail Box",
-		   "base" => "detailbox",
-		   "class" => "",
-		   "icon" => "icon-wpb-detailBox",
-		   "category" => __('Content'),
-		   'admin_enqueue_css' => CAC_DETAIL_BOX_URL . 'vc_extend/icons.css',
-		   "params" => array(
-		   
-				array(
-					"type" => "colorpicker",
-					"class" => "",
-					"heading" => 'Background Color',
-					"param_name" => "bgcolor",
-					"value" => '', 
-					"description" => 'Select background color for the Detail Box',
-					"admin_label" => True
-				),
-				array(
-					"type" => "cAc_hidden",
-// 					"type" => "textfield",
-					"class" => "",
-					"param_name" => "isWPBVC",
-					"value" => 1,
-					"admin_label" => False,
-					"heading" => '',
-					"description" => '',
-				),
-				array(
-					"type" => "textfield",
-					"holder" => "div",
-					"class" => "",
-					"heading" => __("Title 1"),
-					"param_name" => "detailtitle1",
-					"value" => __("Click Here"),
-					"description" => __("Enter the title for the first item."),
-					"admin_label" => False
-				),
-				array(
-					"type" => "textarea_raw_html",
-					"holder" => "div",
-					"class" => "",
-					"heading" => __("Content 1"),
-					"param_name" => "detailcontent1",
-					"value" => __("<p>I am test text block. Click edit button to change this text.</p>"),
-					"description" => __("Enter the content for the first item."),
-					"admin_label" => False
-				),
-				array(
-					"type" => "textfield",
-					"holder" => "div",
-					"class" => "",
-					"heading" => __("Title 2"),
-					"param_name" => "detailtitle2",
-					"value" => __(""),
-					"description" => __("Enter the title for the second item."),
-					"admin_label" => False
-				),
-				array(
-					"type" => "textarea_raw_html",
-					"holder" => "div",
-					"class" => "",
-					"heading" => __("Content 2"),
-					"param_name" => "detailcontent2",
-					"value" => __(""),
-					"description" => __("Enter the content for the second item."),
-					"admin_label" => False
-				),
-				array(
-					"type" => "textfield",
-					"holder" => "div",
-					"class" => "",
-					"heading" => __("Title 3"),
-					"param_name" => "detailtitle3",
-					"value" => __(""),
-					"description" => __("Enter the title for the third item."),
-					"admin_label" => False
-				),
-				array(
-					"type" => "textarea_raw_html",
-					"holder" => "div",
-					"class" => "",
-					"heading" => __("Content 3"),
-					"param_name" => "detailcontent3",
-					"value" => __(""),
-					"description" => __("Enter the content for the third item."),
-					"admin_label" => False
-				),
-				array(
-					"type" => "textfield",
-					"holder" => "div",
-					"class" => "",
-					"heading" => __("Title 4"),
-					"param_name" => "detailtitle4",
-					"value" => __(""),
-					"description" => __("Enter the title for the fourth item."),
-					"admin_label" => False
-				),
-				array(
-					"type" => "textarea_raw_html",
-					"holder" => "div",
-					"class" => "",
-					"heading" => __("Content 4"),
-					"param_name" => "detailcontent4",
-					"value" => __(""),
-					"description" => __("Enter the content for the fourth item."),
-					"admin_label" => False
-				),
-				array(
-					"type" => "textfield",
-					"holder" => "div",
-					"class" => "",
-					"heading" => __("Title 5"),
-					"param_name" => "detailtitle5",
-					"value" => __(""),
-					"description" => __("Enter the title for the fifth item."),
-					"admin_label" => False
-				),
-				array(
-					"type" => "textarea_raw_html",
-					"holder" => "div",
-					"class" => "",
-					"heading" => __("Content 5"),
-					"param_name" => "detailcontent5",
-					"value" => __(""),
-					"description" => __("Enter the content for the fifth item."),
-					"admin_label" => False
-				),
-				array(
-					"type" => "textfield",
-					"holder" => "div",
-					"class" => "",
-					"heading" => __("Title 6"),
-					"param_name" => "detailtitle6",
-					"value" => __(""),
-					"description" => __("Enter the title for the sixth item."),
-					"admin_label" => False
-				),
-				array(
-					"type" => "textarea_raw_html",
-					"holder" => "div",
-					"class" => "",
-					"heading" => __("Content 6"),
-					"param_name" => "detailcontent6",
-					"value" => __(""),
-					"description" => __("Enter the content for the sixth item."),
-					"admin_label" => False
-				),
-				array(
-					"type" => "textfield",
-					"holder" => "div",
-					"class" => "",
-					"heading" => __("Title 7"),
-					"param_name" => "detailtitle7",
-					"value" => __(""),
-					"description" => __("Enter the title for the seventh item."),
-					"admin_label" => False
-				),
-				array(
-					"type" => "textarea_raw_html",
-					"holder" => "div",
-					"class" => "",
-					"heading" => __("Content 7"),
-					"param_name" => "detailcontent7",
-					"value" => __(""),
-					"description" => __("Enter the content for the seventh item."),
-					"admin_label" => False
-				),
-				array(
-					"type" => "textfield",
-					"holder" => "div",
-					"class" => "",
-					"heading" => __("Title 8"),
-					"param_name" => "detailtitle8",
-					"value" => __(""),
-					"description" => __("Enter the title for the eighth item."),
-					"admin_label" => False
-				),
-				array(
-					"type" => "textarea_raw_html",
-					"holder" => "div",
-					"class" => "",
-					"heading" => __("Content 8"),
-					"param_name" => "detailcontent8",
-					"value" => __(""),
-					"description" => __("Enter the content for the eighth item."),
-					"admin_label" => False
-				),
-				array(
-					"type" => "textfield",
-					"holder" => "div",
-					"class" => "",
-					"heading" => __("Title 9"),
-					"param_name" => "detailtitle9",
-					"value" => __(""),
-					"description" => __("Enter the title for the ninth item."),
-					"admin_label" => False
-				),
-				array(
-					"type" => "textarea_raw_html",
-					"holder" => "div",
-					"class" => "",
-					"heading" => __("Content 9"),
-					"param_name" => "detailcontent9",
-					"value" => __(""),
-					"description" => __("Enter the content for the ninth item."),
-					"admin_label" => False
-				),
-				array(
-					 "type" => "textfield",
-					 "holder" => "div",
-					 "class" => "",
-					 "heading" => __("Title 10"),
-					 "param_name" => "detailtitle10",
-					 "value" => __(""),
-					 "description" => __("Enter the title for the tenth item."),
-					 "admin_label" => False
-				),
-				array(
-					"type" => "textarea_raw_html",
-					"holder" => "div",
-					"class" => "",
-					"heading" => __("Content 10"),
-					"param_name" => "detailcontent10",
-					"value" => __(""),
-					"description" => __("Enter the content for the tenth item."),
-					"admin_label" => False
-			  	)
-
-			)	// end params
-		)	// end args
-	);	//end vc_map Detail Box
-
-}	//end if( function_exists( 'vc_map' ) )
-
-}	//end cac_detail_box_vc()
+function hex2rgba($color, $opacity = false) {
+ 
+	$default = 'transparent';
+ 
+	//Return default if no color provided
+	if(empty($color))
+          return $default; 
+ 
+	//Sanitize $color if "#" is provided 
+        if ($color[0] == '#' ) {
+        	$color = substr( $color, 1 );
+        }
+ 
+        //Check if color has 6 or 3 characters and get values
+        if (strlen($color) == 6) {
+                $hex = array( $color[0] . $color[1], $color[2] . $color[3], $color[4] . $color[5] );
+        } elseif ( strlen( $color ) == 3 ) {
+                $hex = array( $color[0] . $color[0], $color[1] . $color[1], $color[2] . $color[2] );
+        } else {
+                return $default;
+        }
+ 
+        //Convert hexadec to rgb
+        $rgb =  array_map('hexdec', $hex);
+ 
+        //Check if opacity is set(rgba or rgb)
+        if($opacity){
+        	if(abs($opacity) > 1)
+        		$opacity = 1.0;
+        	$output = 'rgba('.implode(",",$rgb).','.$opacity.')';
+        } else {
+        	$output = 'rgb('.implode(",",$rgb).')';
+        }
+ 
+        //Return rgb(a) color string
+        return $output;
+}
