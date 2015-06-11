@@ -53,6 +53,7 @@ class cAc_sliding_detail_box_shortcode {
 		$this->_default_atts = array(
 
 			'bgcolor'			=> 'transparent',
+			'bgopacity'			=> '',
 			'detailtitle1'		=> 'Click Here',
 			'detailcontent1'	=> 'This is the information',
 			'detailtitle2'		=> '',
@@ -391,12 +392,16 @@ class cAc_detail_box {
 			$this->id = 'cAcDetailBox' . $atts['instance'];
 			if( isset( $atts['bgcolor'] ) && $atts['bgcolor'] !== 'transparent' ) {
 			
-				if( isset( $atts['bgopacity'] ) ) {
+				if( empty( $atts['bgopacity'] ) ) {
 				
-					$opacity =  $atts['bgopacity'];
+					$bgcolor = cAc_css2rgba( $atts['bgcolor'] );
 				
 				}
-				$bgcolor = hex2rgba($bgcolor);
+				else {
+				
+					$bgcolor = cAc_css2rgba( $atts['bgcolor'], $atts['bgopacity'] );
+				
+				}	//end if( !empty( $atts['bgopacity'] ) )
 			
 			}
 			else {
@@ -404,7 +409,7 @@ class cAc_detail_box {
 				$bgcolor = 'transparent';
 			
 			}
-			$this->bgcolor = $atts['bgcolor'];
+			$this->bgcolor = $bgcolor;
 			if( empty( $content ) ) {
 			
 				$content = $this->_content_from_atts( $atts );
@@ -510,7 +515,7 @@ class cAc_detail_box {
 	
 		if( $this->id !== 'empty' && isset($this->triggers, $this->details ) ) {
 		
-			$this->bgcolor = hex2rgba( $color, $opacity );
+			$this->bgcolor = cAc_css2rgba( $color, $opacity );
 			return $this->_cAc_detail_box_struct();
 		
 		}
@@ -554,8 +559,17 @@ class cAc_detail_box {
 	
 	//return class name for background color as string
 	private function _bgcolorclass() {
-	
-		$class = ' background-' . sanitize_title( str_replace( '#', '', $this->bgcolor ) );
+		
+		if( is_array( $this->bgcolor ) ) {
+		
+			$class = ' background-' . sanitize_title( $this->bgcolor['rgba'] );
+		
+		}
+		else {
+		
+			$class = ' background-' . sanitize_title( str_replace( '#', '', $this->bgcolor ) );
+		
+		}	//end if( is_array( $this->bgcolor ) )
 		return $class;
 	
 	}	//end _bgcolorclass()
@@ -570,7 +584,18 @@ class cAc_detail_box {
 			return '';
 		
 		}
-		$style = ' style="background-color: ' . $this->bgcolor . '"';
+		
+		if( is_array( $this->bgcolor ) ) {
+		
+			$style = ' style="background-color: ' . $this->bgcolor['hex'];
+			$style .= '; background-color: ' .  $this->bgcolor['rgba'] . '"';
+		
+		}
+		else {
+		
+			$style = ' style="background-color: ' . $this->bgcolor . '"';
+		
+		}
 		return $style;
 	
 	}	//end _bgcolorstyle()
@@ -631,40 +656,117 @@ class cAc_detail_box {
 
 $cAc_sliding_detail_boxes = new cAc_sliding_detail_box_shortcode();
 
-function hex2rgba($color, $opacity = false) {
+
+
+if( !( function_exists( 'cAc_css2rgba' ) ) ) {
+
+	//input a css color value as a string and optionally opacity as a string. Will convert hex to rgb, convert hex and rgb to rgba if opacity is given, and return either an array containing hex, rgb, and rgba values:
+	//E.G. array( 'hex' => '000000', 'rgb' => 'rgb(0,0,0)', 'rgba' => 'rgba(0,0,0,1.0)' )
+	//or, if passed an invalid value, return a string $default
+	function cAc_css2rgba($color, $opacity = false) {
  
-	$default = 'transparent';
+		$default = 'transparent';
  
-	//Return default if no color provided
-	if(empty($color))
-          return $default; 
+		//Return default if no color provided
+		if( empty( $color ) ) {
+	
+			  return $default; 
  
-	//Sanitize $color if "#" is provided 
-        if ($color[0] == '#' ) {
-        	$color = substr( $color, 1 );
-        }
- 
-        //Check if color has 6 or 3 characters and get values
-        if (strlen($color) == 6) {
-                $hex = array( $color[0] . $color[1], $color[2] . $color[3], $color[4] . $color[5] );
-        } elseif ( strlen( $color ) == 3 ) {
-                $hex = array( $color[0] . $color[0], $color[1] . $color[1], $color[2] . $color[2] );
-        } else {
-                return $default;
-        }
- 
-        //Convert hexadec to rgb
-        $rgb =  array_map('hexdec', $hex);
- 
-        //Check if opacity is set(rgba or rgb)
-        if($opacity){
-        	if(abs($opacity) > 1)
-        		$opacity = 1.0;
-        	$output = 'rgba('.implode(",",$rgb).','.$opacity.')';
-        } else {
-        	$output = 'rgb('.implode(",",$rgb).')';
-        }
- 
-        //Return rgb(a) color string
-        return $output;
-}
+		 }	//end if( empty( $color ) )
+	 
+		//Sanitize $color if "#" is provided 
+		if( $color[0] == '#' ) {
+	
+			$color = substr( $color, 1 );
+	
+		}	//end if( $color[0] == '#' )
+
+		//Check if color has 6 or 3 characters and get values
+		if( strlen( $color ) === 6 ) {
+	
+			$hex = array( $color[0] . $color[1], $color[2] . $color[3], $color[4] . $color[5] );
+	
+		}
+		elseif( strlen( $color ) === 3 ) {
+	
+			$hex = array( $color[0] . $color[0], $color[1] . $color[1], $color[2] . $color[2] );
+	
+		} //end if( strlen( $color ) === 6 ) / elseif( strlen( $color ) === 3 )
+	
+		//if we have a valid hex array, create rgb array and output value for hex (always returs 6char hex, with '#')
+		if( !empty( $hex ) ) {
+	
+			//Convert hexadec to rgb
+			$rgb =  array_map( 'hexdec', $hex );
+			$output_hex = '#' . implode($hex);
+	
+		}
+		//if passed a rgba color value, set rgb array using color values, and pass its opacity to $opacity unless was given as argument (given opacity argument overrides passed alpha value in rgba)
+		//generate hex output using rgb values in $rgb
+		elseif( substr( $color, 0, 5 ) == 'rgba(') {
+	
+			$rgb = explode( ",", str_replace( ')', '', substr( $color, 5 ) ), 4 );
+			if( $opacity == false ) {
+		
+				$opacity = array_pop( $rgb );
+		
+			}
+			elseif( count( $rgb ) > 3 ) {
+		
+				array_pop( $rgb );
+		
+			}
+			$hex =  array_map( function( $item ) { settype( $item, "int" ); return dechex( $item ); }, $rgb );
+			$output_hex = '#' . implode($hex);
+	
+		}
+		//if passed an rgb color value, set rgb array using color values
+		//generate hex output using rgb values in $rgb
+		elseif( substr( $color, 0, 4 ) == 'rgb(' ) {
+	
+			$rgb = explode( ",", str_replace( ')', '', substr( $color, 4 ) ), 3 );
+			$hex =  array_map( function( $item ) { settype( $item, "int" ); return dechex( $item ); }, $rgb );
+	
+		}
+		//we're not dealing with string color values; returns default value as a string ('transparent')
+		else {
+	
+			return $default;
+	
+		}	//end ( !empty( $hex ) ) / elseif( substr( $color, 0, 5 ) == 'rgba(') / elseif( substr( $color, 0, 4 ) == 'rgb(' )
+
+	
+
+		//Check if opacity is set(rgba or rgb); default to solid color (1.0) in rgba if $opacity not set or invalid
+		//generate output for rgb and rgba values using $rgb array and opacity
+		if( $opacity ) {
+	
+			if( abs( $opacity ) > 1 ) {
+		
+				$opacity = 1.0;
+		
+			}	//end if( abs( $opacity ) > 1 )
+			$output_rgb = 'rgb(' . implode( ",", $rgb ) . ')';
+			$output_rgba = 'rgba(' . implode( ",", $rgb ) . ',' . $opacity . ')';
+		}
+		else {
+	
+			$output_rgb = 'rgb(' . implode( ",", $rgb ) . ')';
+			$output_rgba = 'rgba(' . implode( ",", $rgb ) . ',1.0)';
+	
+		}	//end if( $opacity )
+		
+		$output = array(
+	
+			'hex'	=> $output_hex,
+			'rgb'	=> $output_rgb,
+			'rgba'	=> $output_rgba,
+	
+		);
+
+		//Return array with three strings
+		return $output;
+
+	}	//end cAc_css2rgba( $color, $opacity = false )å
+
+}	//end if( !( function_exists( 'cAc_css2rgba' ) ) )
